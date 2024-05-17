@@ -265,10 +265,10 @@ Redraw:
 
 moveRight:
 
+    mov ColorChangedUpDown, 0
     cmp ColorChanged,0
     jne ColorChangedRightLabel
-    mov ColorChangedUpDown, 0
-    
+        
     ; draw the left column with black   
     push column
     push row
@@ -290,14 +290,17 @@ ColorNotChangedRightLabel:
     push h
     push 0Fh ;color white
     call DrawColumn
-    
-	jmp Redraw
+     
+    cmp ColorChanged, 0
+	Ja moveRight 
+	
+jmp Redraw
     
 MoveLeft:
-    
+
+    mov ColorChangedUpDown, 0
     cmp ColorChanged,0
-    jne ColorChangedLeftLabel
-    mov ColorChangedUpDown, 0 
+    jne ColorChangedLeftLabel 
         
     mov cx, column
     add cx,w
@@ -320,13 +323,15 @@ ColorNotChangedLeftLabel:
     push 0Fh; color black
     call DrawColumn
        
-    jmp Redraw
+    cmp ColorChanged, 0
+	Ja MoveLeft
+jmp Redraw
 
-MoveUp: 
-
+MoveUp:
+ 
+    mov ColorChanged, 0
     cmp ColorChangedUpDown,0
     jne ColorChangedUpLabel 
-    mov ColorChanged, 0
         
     mov dx, row
     add dx,h
@@ -348,14 +353,15 @@ ColorNotChangedUpLabel:
     push 0fh  ;color white
     call DrawRow  
     
-    
-    jmp Redraw 
+    cmp ColorChangedUpDown, 0
+	Ja MoveUp
+jmp Redraw 
     
 MoveDown:
-    
+
+    mov ColorChanged, 0
     cmp ColorChangedUpDown,0
     jne ColorChangedDownLabel
-    mov ColorChanged, 0
         
     mov dx, row
     push dx
@@ -379,7 +385,9 @@ ColorNotChangedDownLabel:
     push 0fh ;color white
     call DrawRow
     
-    jmp Redraw
+    cmp ColorChangedUpDown, 0
+	Ja MoveDown
+jmp Redraw
 
 BluePut:
     push column
